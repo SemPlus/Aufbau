@@ -72,6 +72,11 @@ export const ElectronicConfigurator: React.FC = () => {
               </span>
             </button>
           ))}
+          <div className="px-3 py-10 mt-6 border-t border-neutral-900/30 text-center">
+            <span className="text-[10px] font-bold text-neutral-800 uppercase tracking-widest animate-pulse">
+              More elements coming soon...
+            </span>
+          </div>
         </div>
 
         <div className="mt-auto pt-6 border-t border-quantum-border flex flex-col gap-2">
