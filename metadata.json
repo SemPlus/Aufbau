@@ -1,0 +1,6 @@
+{
+  "name": "Electronic Configuration Lab",
+  "description": "An interactive tool to visualize electron configurations using the Aufbau pattern and Hund's rule with orbital diagrams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-s-orbital: #f87171;
+  --color-p-orbital: #60a5fa;
+  --color-d-orbital: #4ade80;
+  --color-f-orbital: #fbbf24;
+  
+  --color-quantum-bg: #000000;
+  --color-quantum-sidebar: #050505;
+  --color-quantum-border: #1a1a1a;
+  --color-quantum-accent: #eab308;
+  --color-quantum-down: #404040;
+}
+
+@layer base {
+  body {
+    @apply bg-quantum-bg text-slate-300 antialiased;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .orbital-box {
+    @apply w-8 h-8 border border-neutral-800 bg-neutral-950 flex items-center justify-center transition-all duration-300;
+  }
+
+  .orbital-box.filled {
+    @apply border-quantum-accent/30 shadow-[0_0_15px_rgba(234,179,8,0.05)];
+  }
+
+  .arrow-up {
+    @apply text-quantum-accent font-serif text-lg leading-none -translate-x-0.5 drop-shadow-[0_0_8px_rgba(234,179,8,0.3)];
+  }
+
+  .arrow-down {
+    @apply text-neutral-600 font-serif text-lg leading-none translate-x-0.5;
+  }
+
+  .orbital-label {
+    @apply font-mono font-bold text-neutral-600 text-sm;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-1;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full;
+  }
+}
