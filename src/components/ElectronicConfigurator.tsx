@@ -6,7 +6,7 @@ import { OrbitalLevelRow } from './OrbitalLevelRow';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const ElectronicConfigurator: React.FC = () => {
-  const [selectedSymbol, setSelectedSymbol] = React.useState<string>("H");
+  const [selectedSymbol, setSelectedSymbol] = React.useState<string>("Si");
 
   const element = React.useMemo(() => 
     elementsData.find(el => el.symbol === selectedSymbol),
