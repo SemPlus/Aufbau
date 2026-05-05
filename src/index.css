@@ -11,6 +11,7 @@
   --color-quantum-border: #1a1a1a;
   --color-quantum-accent: #eab308;
   --color-quantum-down: #404040;
+  --grid-template-columns-18: repeat(18, minmax(0, 1fr));
 }
 
 @layer base {

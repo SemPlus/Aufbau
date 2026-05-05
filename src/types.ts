@@ -2,6 +2,8 @@ export interface ElementData {
   symbol: string;
   name: string;
   z: number;
+  period?: number;
+  group?: number;
 }
 
 export interface OrbitalLevel {

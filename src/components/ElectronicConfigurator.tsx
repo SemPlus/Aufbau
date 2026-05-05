@@ -1,14 +1,18 @@
 import React from 'react';
-import { FlaskConical, Search, X, Menu } from 'lucide-react';
+import { FlaskConical, Search, X, Menu, LayoutGrid, Zap } from 'lucide-react';
 import { ElementData, OrbitalLevel, ConfigException } from '../types';
 import { elementsData, aufbauOrder, exceptions } from '../data/elements';
 import { OrbitalLevelRow } from './OrbitalLevelRow';
+import { PeriodicTable } from './PeriodicTable';
 import { motion, AnimatePresence } from 'motion/react';
+
+type ViewMode = 'config' | 'table';
 
 export const ElectronicConfigurator: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = React.useState<string>("Si");
   const [searchTerm, setSearchTerm] = React.useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState<boolean>(false);
+  const [viewMode, setViewMode] = React.useState<ViewMode>("config");
 
   const element = React.useMemo(() => 
     elementsData.find(el => el.symbol === selectedSymbol),
@@ -167,66 +171,108 @@ export const ElectronicConfigurator: React.FC = () => {
           </div>
         </div>
 
+        {/* View Toggle */}
+        <div className="flex p-1 bg-neutral-900 border border-quantum-border rounded-xl mb-4 lg:mb-8 w-fit self-center lg:self-start">
+          <button
+            onClick={() => setViewMode('config')}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${
+              viewMode === 'config' ? 'bg-quantum-accent text-black' : 'text-neutral-500 hover:text-neutral-300'
+            }`}
+          >
+            <Zap className="w-3 h-3" />
+            Config
+          </button>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${
+              viewMode === 'table' ? 'bg-quantum-accent text-black' : 'text-neutral-500 hover:text-neutral-300'
+            }`}
+          >
+            <LayoutGrid className="w-3 h-3" />
+            Table
+          </button>
+        </div>
+
         <AnimatePresence mode="wait">
-          {element && (
-            <motion.div 
-              key={element.symbol}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col gap-6 lg:gap-8 h-full min-h-0"
-            >
-              <header className="flex justify-between items-end border-b border-neutral-900 pb-4">
-                <motion.div 
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  className="element-badge text-5xl md:text-6xl lg:text-7xl font-black text-quantum-accent leading-none tracking-tighter"
-                >
-                  {element.symbol}
-                </motion.div>
-                <div className="text-right">
+          {viewMode === 'config' ? (
+            element && (
+              <motion.div 
+                key={element.symbol}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex-1 flex flex-col gap-6 lg:gap-8 h-full min-h-0"
+              >
+                <header className="flex justify-between items-end border-b border-neutral-900 pb-4">
                   <motion.div 
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className="text-xl md:text-2xl lg:text-3xl font-light text-slate-100 mb-1"
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    className="element-badge text-5xl md:text-6xl lg:text-7xl font-black text-quantum-accent leading-none tracking-tighter"
                   >
-                    {element.name}
+                    {element.symbol}
                   </motion.div>
-                  <div className="font-mono text-neutral-600 text-[10px] md:text-xs lg:text-sm flex flex-col items-end">
-                    <span>Z = {element.z}</span>
-                    <span className="text-quantum-accent font-black text-[8px] md:text-[9px] lg:text-[10px] tracking-[2px] mt-1">BY SAMUEL K.</span>
+                  <div className="text-right">
+                    <motion.div 
+                      initial={{ y: 10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      className="text-xl md:text-2xl lg:text-3xl font-light text-slate-100 mb-1"
+                    >
+                      {element.name}
+                    </motion.div>
+                    <div className="font-mono text-neutral-600 text-[10px] md:text-xs lg:text-sm flex flex-col items-end">
+                      <span>Z = {element.z}</span>
+                      <span className="text-quantum-accent font-black text-[8px] md:text-[9px] lg:text-[10px] tracking-[2px] mt-1">BY SAMUEL K.</span>
+                    </div>
+                  </div>
+                </header>
+
+                <div className="flex-1 overflow-hidden flex flex-col bg-neutral-900/10 border border-quantum-border rounded-2xl p-4 md:p-6 relative">
+                  <div className="absolute top-4 left-6 text-[10px] font-black text-neutral-800 uppercase tracking-widest z-0 hidden md:block">
+                    Shell Configuration
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col pr-2 relative z-10">
+                    {config.map((item, idx) => (
+                      <OrbitalLevelRow 
+                        key={item.level.label} 
+                        level={item.level} 
+                        electronsInLevel={item.count} 
+                        index={idx}
+                      />
+                    ))}
                   </div>
                 </div>
-              </header>
 
-              <div className="flex-1 overflow-hidden flex flex-col bg-neutral-900/10 border border-quantum-border rounded-2xl p-4 md:p-6 relative">
-                <div className="absolute top-4 left-6 text-[10px] font-black text-neutral-800 uppercase tracking-widest z-0 hidden md:block">
-                  Shell Configuration
-                </div>
-                
-                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col pr-2 relative z-10">
-                  {config.map((item, idx) => (
-                    <OrbitalLevelRow 
-                      key={item.level.label} 
-                      level={item.level} 
-                      electronsInLevel={item.count} 
-                      index={idx}
-                    />
-                  ))}
-                </div>
+                <footer className="group relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-quantum-accent/20 to-neutral-700/10 rounded-xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
+                  <div className="relative bg-neutral-950 border border-quantum-border p-4 lg:p-6 rounded-xl font-mono text-base md:text-lg lg:text-xl flex flex-wrap gap-x-4 gap-y-2">
+                    {config.map(({ level, count }, idx) => (
+                      <span key={idx} className="flex">
+                        <span className="text-neutral-500 font-medium">{level.label}</span>
+                        <sup className="text-quantum-accent font-black text-[10px] md:text-xs lg:text-sm ml-0.5">{count}</sup>
+                      </span>
+                    ))}
+                  </div>
+                </footer>
+              </motion.div>
+            )
+          ) : (
+            <motion.div
+              key="table"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="flex-1 min-h-0"
+            >
+              <div className="h-full overflow-auto custom-scrollbar pb-12">
+                <PeriodicTable 
+                  selectedSymbol={selectedSymbol} 
+                  onSelect={(symbol) => {
+                    setSelectedSymbol(symbol);
+                    setViewMode('config');
+                  }} 
+                />
               </div>
-
-              <footer className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-quantum-accent/20 to-neutral-700/10 rounded-xl blur-lg opacity-25 group-hover:opacity-40 transition-opacity" />
-                <div className="relative bg-neutral-950 border border-quantum-border p-4 lg:p-6 rounded-xl font-mono text-base md:text-lg lg:text-xl flex flex-wrap gap-x-4 gap-y-2">
-                  {config.map(({ level, count }, idx) => (
-                    <span key={idx} className="flex">
-                      <span className="text-neutral-500 font-medium">{level.label}</span>
-                      <sup className="text-quantum-accent font-black text-[10px] md:text-xs lg:text-sm ml-0.5">{count}</sup>
-                    </span>
-                  ))}
-                </div>
-              </footer>
             </motion.div>
           )}
         </AnimatePresence>
